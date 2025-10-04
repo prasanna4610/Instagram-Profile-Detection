@@ -1,11 +1,15 @@
-# fake_profile_streamlit.py
+# fake_profile_streamlit_fixed.py
 import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from PIL import Image
+import os
 
-df = pd.read_csv(r"D:\final\final\succ\succ\Dataset.csv")
+# ----------------- Load dataset -----------------
+dataset_path = os.path.join(os.path.dirname(__file__), "Dataset.csv")
+df = pd.read_csv(dataset_path)
+
 X = df.drop('fake', axis=1)
 y = df['fake']
 
@@ -13,6 +17,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = RandomForestClassifier()
 model.fit(X_train, y_train)
 
+# ----------------- Streamlit UI -----------------
 st.title("Fake Profile Detection")
 st.write("Enter the profile information. If True enter 1 or Enter 0")
 
@@ -31,10 +36,11 @@ if st.button("Check the profile"):
     with st.expander("", expanded=True):
         st.write(f"Profile is **{result}**")
 
+        # ----------------- Load image from project folder -----------------
         if result == "Fake":
-            img_path = r"C:\Users\sanam\Music\Data Science project of mine\Instagram\Not ok.png"  # your fake image
+            img_path = os.path.join(os.path.dirname(__file__), "Not ok.png")
         else:
-            img_path = r"C:\Users\sanam\Music\Data Science project of mine\Instagram\Ok Emoji.png"  # your real image
+            img_path = os.path.join(os.path.dirname(__file__), "Ok Emoji.png")
 
         img = Image.open(img_path)
         st.image(img, width=200)
